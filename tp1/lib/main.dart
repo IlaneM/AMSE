@@ -1,113 +1,181 @@
 import 'package:flutter/material.dart';
+import 'package:tp1/media.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Home',
+      theme: ThemeData(primarySwatch: Colors.red),
+      home: MyStatefulWidget(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Home',
+      style: optionStyle,
+    ),
+    ListView.builder(
+      itemCount: series.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Description(series, index),
+                ),
+              );
+            },
+            title: Text(series[index].title),
+            leading: Image.network(series[index].imageUrl),
+          ),
+        );
+      },
+    ),
+    Text(
+      'Film',
+      style: optionStyle,
+    ),
+    Text(
+      'Manga',
+      style: optionStyle,
+    ),
+    Text(
+      'TP1 \nMESSAOUDI Ilane',
+      style: optionStyle,
+    ),
+  ];
 
-  void _incrementCounter() {
+  void _onItemTapped(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Gestion de média'),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.movie),
+            label: 'Séries',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.movie),
+            label: 'Films',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Manga',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'Infos',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.red[200],
+        unselectedItemColor: Colors.black87,
+        showUnselectedLabels: true,
+        onTap: _onItemTapped,
+      ),
     );
   }
+}
+
+Widget Description(List<MediaModel> type, int index) {
+  return Scaffold(
+    appBar: AppBar(
+      automaticallyImplyLeading: true,
+      title: Text('${type[index].title}'),
+    ),
+    body: CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: <Widget>[
+        SliverAppBar(
+          leading: new Container(),
+          stretch: true,
+          onStretchTrigger: () {
+            // Function callback for stretch
+            return;
+          },
+          expandedHeight: 200.0,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment(0.0, 0.5),
+                        end: Alignment(0.0, 0.0),
+                        colors: <Color>[
+                          Color(0xFFFFFFFF),
+                          Color(0xFFFFFFFF),
+                        ]),
+                  ),
+                ),
+                Image.network(
+                  type[index].imageUrl,
+                  //fit: BoxFit.cover,
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            ListTile(
+              title: Text('Description '),
+              subtitle: Text('${type[index].description}'),
+            ),
+            ListTile(
+              title: Text('Saisons '),
+              subtitle: Text('${type[index].saison}'),
+            ),
+            ListTile(
+              title: Text('Episodes par saison '),
+              subtitle: Text('${type[index].episode}'),
+            ),
+            // ListTiles++
+          ]),
+        ),
+      ],
+    ),
+  );
+
+  /*Center(
+        child: Text(
+            'Description : \n${type[index1].description} \nSaisons : ${type[index1].saison} \nEpisodes : ${type[index1].episode}'),
+      ));*/
 }
