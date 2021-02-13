@@ -126,7 +126,6 @@ Widget Description(List<MediaModel> type, int index) {
           leading: new Container(),
           stretch: true,
           onStretchTrigger: () {
-            // Function callback for stretch
             return;
           },
           expandedHeight: 200.0,
@@ -147,7 +146,6 @@ Widget Description(List<MediaModel> type, int index) {
                 ),
                 Image.network(
                   type[index].imageUrl,
-                  //fit: BoxFit.cover,
                 ),
               ],
             ),
@@ -167,15 +165,9 @@ Widget Description(List<MediaModel> type, int index) {
               title: Text('Episodes par saison '),
               subtitle: Text('${type[index].episode}'),
             ),
-            // ListTiles++
           ]),
         ),
       ],
     ),
   );
-
-  /*Center(
-        child: Text(
-            'Description : \n${type[index1].description} \nSaisons : ${type[index1].saison} \nEpisodes : ${type[index1].episode}'),
-      ));*/
 }
