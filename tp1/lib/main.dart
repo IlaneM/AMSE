@@ -51,13 +51,43 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         );
       },
     ),
-    Text(
-      'Film',
-      style: optionStyle,
+    ListView.builder(
+      itemCount: films.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Description(films, index),
+                ),
+              );
+            },
+            title: Text(films[index].title),
+            leading: Image.network(films[index].imageUrl),
+          ),
+        );
+      },
     ),
-    Text(
-      'Manga',
-      style: optionStyle,
+    ListView.builder(
+      itemCount: manga.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Description(manga, index),
+                ),
+              );
+            },
+            title: Text(manga[index].title),
+            leading: Image.network(manga[index].imageUrl),
+          ),
+        );
+      },
     ),
     Text(
       'TP1 \nMESSAOUDI Ilane',
@@ -96,7 +126,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Manga',
+            label: 'Mangas',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
@@ -152,22 +182,105 @@ Widget Description(List<MediaModel> type, int index) {
           ),
         ),
         SliverList(
-          delegate: SliverChildListDelegate([
-            ListTile(
-              title: Text('Description '),
-              subtitle: Text('${type[index].description}'),
-            ),
-            ListTile(
-              title: Text('Saisons '),
-              subtitle: Text('${type[index].saison}'),
-            ),
-            ListTile(
-              title: Text('Episodes par saison '),
-              subtitle: Text('${type[index].episode}'),
-            ),
-          ]),
+          delegate: SliverChildListDelegate(children(type, index)),
         ),
       ],
     ),
   );
+}
+
+List<Widget> children(List<MediaModel> type, int index) {
+  List<ListTile> retour = [];
+  retour.addAll([
+    ListTile(
+      title: Text(
+        'Description ',
+        style: TextStyle(fontSize: 20, color: Colors.black),
+      ),
+      subtitle: Text('${type[index].description}'),
+    ),
+    ListTile(
+      title: Text(
+        'Date de sortie  ',
+        style: TextStyle(fontSize: 20, color: Colors.black),
+      ),
+      subtitle: Text('${type[index].sortie}'),
+    ),
+  ]);
+  if (type == series) {
+    retour.addAll([
+      ListTile(
+        title: Text(
+          'Saisons ',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        subtitle: Text('${type[index].saison}'),
+      ),
+      ListTile(
+        title: Text(
+          'Episodes ',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        subtitle: Text('${type[index].episode}'),
+      ),
+      ListTile(
+          title: Text(
+            'Producteur  ',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text('${type[index].producteur}')),
+      ListTile(
+          title: Text(
+            'Acteurs Principaux  ',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text('${type[index].acteur}')),
+    ]);
+  } else if (type == films) {
+    retour.addAll([
+      ListTile(
+        title: Text(
+          'Durée ',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        subtitle: Text('${type[index].duree}'),
+      ),
+      ListTile(
+          title: Text(
+            'Producteur  ',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text('${type[index].producteur}')),
+      ListTile(
+          title: Text(
+            'Acteurs Principaux  ',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text('${type[index].acteur}')),
+    ]);
+  } else {
+    retour.addAll([
+      ListTile(
+        title: Text(
+          'Saisons ',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        subtitle: Text('${type[index].saison}'),
+      ),
+      ListTile(
+        title: Text(
+          'Episodes ',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        subtitle: Text('${type[index].episode}'),
+      ),
+      ListTile(
+          title: Text(
+            'Créateur  ',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text('${type[index].producteur}')),
+    ]);
+  }
+  return (retour);
 }
