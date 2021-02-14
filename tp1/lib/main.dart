@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Home',
-      theme: ThemeData(primarySwatch: Colors.red),
+      theme: ThemeData(primaryColor: Colors.red[400]),
       home: MyStatefulWidget(),
     );
   }
@@ -29,7 +29,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     Text(
-      'Favoris',
+      "Favoris (Je n'ai pas eu le temps de finir ça) ",
       style: optionStyle,
     ),
     ListView.builder(
@@ -134,7 +134,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.red[200],
+        selectedItemColor: Colors.red[900],
         unselectedItemColor: Colors.black87,
         showUnselectedLabels: true,
         onTap: _onItemTapped,
