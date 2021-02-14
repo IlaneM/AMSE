@@ -29,7 +29,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     Text(
-      'Home',
+      'Favoris',
       style: optionStyle,
     ),
     ListView.builder(
@@ -148,6 +148,12 @@ Widget Description(List<MediaModel> type, int index) {
     appBar: AppBar(
       automaticallyImplyLeading: true,
       title: Text('${type[index].title}'),
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.favorite_border),
+            tooltip: 'Ajouter aux favoris',
+            onPressed: () {})
+      ],
     ),
     body: CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -262,7 +268,7 @@ List<Widget> children(List<MediaModel> type, int index) {
     retour.addAll([
       ListTile(
         title: Text(
-          'Saisons ',
+          'Tomes ',
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
         subtitle: Text('${type[index].saison}'),
@@ -276,7 +282,7 @@ List<Widget> children(List<MediaModel> type, int index) {
       ),
       ListTile(
           title: Text(
-            'Créateur  ',
+            'Auteur  ',
             style: TextStyle(fontSize: 20, color: Colors.black),
           ),
           subtitle: Text('${type[index].producteur}')),
