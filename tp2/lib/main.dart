@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 void main() {
   runApp(MyApp());
@@ -9,105 +10,219 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'TP2',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyStatefulWidget(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+          title: const Text('TP2'),
+        ),
+        body: ListView(
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice1(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 1'),
+                subtitle: Text('Afficher une image'),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice2(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 2'),
+                subtitle: Text('Transformer une image'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DisplayTileWidget(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 4'),
+                subtitle: Text("Affichage d'une tuile"),
+              ),
             ),
           ],
+        ));
+  }
+}
+
+Widget Exercice1() {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Exercice 1'),
+    ),
+    body:
+        Center(child: Image(image: NetworkImage('https://picsum.photos/512'))),
+  );
+}
+
+class Exercice2 extends StatefulWidget {
+  @override
+  _Exercice2State createState() => _Exercice2State();
+}
+
+class _Exercice2State extends State<Exercice2> {
+  double rotationXValue = 0;
+  double rotationZValue = 0;
+  double scaleValue = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exercice 2'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Center(
+            child: Transform.rotate(
+              angle: rotationXValue * math.pi / 160,
+              child: Container(
+                height: 450,
+                width: 450,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Image(image: NetworkImage('https://picsum.photos/512')),
+              ),
+            ),
+          ),
+          Slider(
+            min: 0.0,
+            max: 100.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            value: rotationXValue,
+            label: rotationXValue.round().toString(),
+            onChanged: (double newXvalue) {
+              setState(() {
+                rotationXValue = newXvalue;
+              });
+            },
+          ),
+          Slider(
+            min: 0.0,
+            max: 100.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            value: rotationZValue,
+            label: rotationZValue.round().toString(),
+            onChanged: (double newZvalue) {
+              setState(() {
+                rotationZValue = newZvalue;
+              });
+            },
+          ),
+          Slider(
+            min: 0.0,
+            max: 100.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            value: scaleValue,
+            label: scaleValue.round().toString(),
+            onChanged: (double newScalevalue) {
+              setState(() {
+                scaleValue = newScalevalue;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Tile {
+  String imageURL;
+  Alignment alignment;
+
+  Tile({this.imageURL, this.alignment});
+
+  Widget croppedImageTile() {
+    return FittedBox(
+      fit: BoxFit.fill,
+      child: ClipRect(
+        child: Container(
+          child: Align(
+            alignment: this.alignment,
+            widthFactor: 0.2,
+            heightFactor: 0.2,
+            child: Image.network(this.imageURL),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+Tile tile =
+    new Tile(imageURL: 'https://picsum.photos/512', alignment: Alignment(0, 0));
+
+class DisplayTileWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Affichage d'une tuile"),
+        centerTitle: true,
+      ),
+      body: Center(
+          child: Column(children: [
+        SizedBox(
+            width: 150.0,
+            height: 150.0,
+            child: Container(
+                margin: EdgeInsets.all(20.0),
+                child: this.createTileWidgetFrom(tile))),
+        Container(
+            height: 200,
+            child:
+                Image.network('https://picsum.photos/512', fit: BoxFit.cover))
+      ])),
+    );
+  }
+
+  Widget createTileWidgetFrom(Tile tile) {
+    return InkWell(
+      child: tile.croppedImageTile(),
+      onTap: () {
+        print("tapped on tile");
+      },
     );
   }
 }

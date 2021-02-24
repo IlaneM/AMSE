@@ -29,7 +29,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     Text(
-      "Favoris (Je n'ai pas eu le temps de finir ça) ",
+      "Favoris ",
       style: optionStyle,
     ),
     ListView.builder(
