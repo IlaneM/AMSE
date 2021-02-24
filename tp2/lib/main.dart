@@ -78,6 +78,35 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 subtitle: Text("Affichage d'une tuile"),
               ),
             ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice5a(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 5.a'),
+                subtitle: Text("Génération du plateau de tuiles"),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice5b(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 5.b'),
+                subtitle: Text(
+                    "Génération du plateau de tuiles à partir d'une image"),
+              ),
+            ),
           ],
         ));
   }
@@ -224,5 +253,57 @@ class DisplayTileWidget extends StatelessWidget {
         print("tapped on tile");
       },
     );
+  }
+}
+
+class Exercice5a extends StatefulWidget {
+  @override
+  _Exercice5aState createState() => _Exercice5aState();
+}
+
+class _Exercice5aState extends State<Exercice5a> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Exercice 5a'),
+        ),
+        body: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, crossAxisSpacing: 10, mainAxisSpacing: 10),
+            itemCount: 9,
+            itemBuilder: (BuildContext ctx, index) {
+              return Container(
+                alignment: Alignment.center,
+                child: Text("Case ${index}"),
+                decoration: BoxDecoration(
+                    color: Colors.amber[100 * int.parse('${index}')]),
+              );
+            }));
+  }
+}
+
+class Exercice5b extends StatefulWidget {
+  @override
+  _Exercice5bState createState() => _Exercice5bState();
+}
+
+class _Exercice5bState extends State<Exercice5b> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Exercice 5b'),
+        ),
+        body: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, crossAxisSpacing: 10, mainAxisSpacing: 10),
+            itemCount: 9,
+            itemBuilder: (BuildContext ctx, index) {
+              return Container(
+                alignment: Alignment.center,
+                child: DisplayTileWidget(),
+              );
+            }));
   }
 }
