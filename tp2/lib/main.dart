@@ -208,9 +208,29 @@ class Tile {
       child: ClipRect(
         child: Container(
           child: Align(
-            alignment: this.alignment,
-            widthFactor: 0.2,
-            heightFactor: 0.2,
+            alignment: Alignment.centerLeft,
+            widthFactor: 0.3,
+            heightFactor: 0.3,
+            child: Image.network(this.imageURL),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget croppedImageTile2(int index, int taille) {
+    int q = index ~/ taille;
+    int r = index % taille;
+    int n = taille - 1;
+
+    return FittedBox(
+      fit: BoxFit.fill,
+      child: ClipRect(
+        child: Container(
+          child: Align(
+            alignment: FractionalOffset(r / n, q / n),
+            widthFactor: 1 / taille,
+            heightFactor: 1 / taille,
             child: Image.network(this.imageURL),
           ),
         ),
@@ -270,7 +290,7 @@ class _Exercice5aState extends State<Exercice5a> {
         ),
         body: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, crossAxisSpacing: 10, mainAxisSpacing: 10),
+                crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 5),
             itemCount: 9,
             itemBuilder: (BuildContext ctx, index) {
               return Container(
@@ -297,13 +317,31 @@ class _Exercice5bState extends State<Exercice5b> {
         ),
         body: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, crossAxisSpacing: 10, mainAxisSpacing: 10),
+                crossAxisCount: 3, crossAxisSpacing: 4, mainAxisSpacing: 4),
             itemCount: 9,
             itemBuilder: (BuildContext ctx, index) {
               return Container(
                 alignment: Alignment.center,
-                child: DisplayTileWidget(),
+                child: Column(
+                  children: [
+                    SizedBox(
+                        width: (370 - 8) / 3,
+                        height: (370 - 8) / 3,
+                        child: Container(
+                            margin: EdgeInsets.all(0.0),
+                            child: this.createTileWidgetFrom2(tile, index, 3))),
+                  ],
+                ),
               );
             }));
+  }
+
+  Widget createTileWidgetFrom2(Tile tile, int index, int taille) {
+    return InkWell(
+      child: tile.croppedImageTile2(index, taille),
+      onTap: () {
+        print("tapped on tile");
+      },
+    );
   }
 }
