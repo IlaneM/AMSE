@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+//import 'package:tp2/Exercice6.dart'
 
 void main() {
   runApp(MyApp());
@@ -119,6 +120,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 },
                 title: Text('Exercice 5c'),
                 subtitle: Text("Configuration du plateau de tuiles"),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice5c(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 6a'),
+                subtitle: Text("Echange de deux tuiles"),
               ),
             ),
           ],
