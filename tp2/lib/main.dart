@@ -88,7 +88,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ),
                   );
                 },
-                title: Text('Exercice 5.a'),
+                title: Text('Exercice 5a'),
                 subtitle: Text("Génération du plateau de tuiles"),
               ),
             ),
@@ -102,7 +102,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ),
                   );
                 },
-                title: Text('Exercice 5.b'),
+                title: Text('Exercice 5b'),
                 subtitle: Text(
                     "Génération du plateau de tuiles à partir d'une image"),
               ),
@@ -117,7 +117,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ),
                   );
                 },
-                title: Text('Exercice 5.c'),
+                title: Text('Exercice 5c'),
                 subtitle: Text("Configuration du plateau de tuiles"),
               ),
             ),
