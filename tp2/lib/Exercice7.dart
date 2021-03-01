@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:tp2/Exercice4.dart';
+import 'package:tp2/Exercice6.dart';
 
 class GameTaquin extends StatefulWidget {
   @override
@@ -9,11 +10,18 @@ class GameTaquin extends StatefulWidget {
 
 class _GameTaquinState extends State<GameTaquin> {
   double size = 3;
+  bool caseB;
+  bool joue;
+  int deplacements;
   List<NewTile> tiles;
+  List<NewTile> tilesFin;
   @override
   void initState() {
     super.initState();
     tiles = initTiles();
+    joue = false;
+    deplacements = 0;
+    caseB = false;
   }
 
   List<NewTile> initTiles() {
@@ -27,7 +35,12 @@ class _GameTaquinState extends State<GameTaquin> {
   List<Widget> getTileWidgets(List<NewTile> inittiles) {
     List<Widget> tiles = [];
     for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
-      tiles.add(newCreateTileWidgetFrom(inittiles[i], i, size.toInt()));
+      tiles.add(createTileWidget(inittiles[i], i, size.toInt(), 0));
+    }
+    if (!caseB && joue) {
+      math.Random random = new math.Random();
+      int indexB = random.nextInt(size.toInt() * size.toInt());
+      tiles[indexB] = Container(color: Colors.white);
     }
     return tiles;
   }
@@ -36,7 +49,7 @@ class _GameTaquinState extends State<GameTaquin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exercice 6b'),
+        title: Text('Exercice 7'),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -68,29 +81,39 @@ class _GameTaquinState extends State<GameTaquin> {
               });
             },
           ),
+          TextButton(
+            child: Text("Start"),
+            onPressed: () {
+              joue = !joue;
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget newCreateTileWidgetFrom(
+  Widget createTileWidget(
     //Tile to Widget
     NewTile plateau,
     int index,
     int taille,
+    int indexB,
   ) {
     Widget tuile;
     tuile = plateau.newCroppedImageTile(taille);
-    return InkWell(
-      child: tuile,
-      onTap: () {
-        swapTile(index);
-      },
-    );
+    if (joue) {
+      return InkWell(
+        child: tuile,
+        onTap: () {
+          swapTile(index, indexB);
+        },
+      );
+    } else {
+      return tuile;
+    }
   }
 
-  swapTile(int index) {
-    print("${index}");
+  swapTile(int index, int indexB) {
     setState(() {
       tiles.insert(index, tiles.removeAt(index + 1));
     });

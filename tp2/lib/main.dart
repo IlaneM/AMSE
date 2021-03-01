@@ -5,6 +5,7 @@ import 'package:tp2/Exercice2.dart';
 import 'package:tp2/Exercice4.dart';
 import 'package:tp2/Exercice5.dart';
 import 'package:tp2/Exercice6.dart';
+import 'package:tp2/Exercice7.dart';
 
 void main() {
   runApp(MyApp());
@@ -152,6 +153,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 },
                 title: Text('Exercice 6b'),
                 subtitle: Text("Echange de deux tuiles dans un plateau"),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GameTaquin(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 7'),
+                subtitle: Text("Jeu du Taquin"),
               ),
             ),
           ],
