@@ -3,9 +3,8 @@ import 'dart:math' as math;
 
 class Tile {
   String imageURL;
-  Alignment alignment;
 
-  Tile({this.imageURL, this.alignment});
+  Tile({this.imageURL});
 
   Widget croppedImageTile() {
     return FittedBox(
@@ -44,8 +43,7 @@ class Tile {
   }
 }
 
-Tile tile =
-    new Tile(imageURL: 'https://picsum.photos/512', alignment: Alignment(0, 0));
+Tile tile2 = new Tile(imageURL: 'https://picsum.photos/512');
 
 class DisplayTileWidget extends StatelessWidget {
   @override
@@ -62,7 +60,7 @@ class DisplayTileWidget extends StatelessWidget {
             height: 150.0,
             child: Container(
                 margin: EdgeInsets.all(20.0),
-                child: this.createTileWidgetFrom(tile))),
+                child: this.createTileWidgetFrom(tile2))),
         Container(
             height: 200,
             child:

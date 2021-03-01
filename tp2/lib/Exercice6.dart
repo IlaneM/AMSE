@@ -75,18 +75,31 @@ class Exercice6b extends StatefulWidget {
 
 class _Exercice6bState extends State<Exercice6b> {
   double size = 3;
+  List<NewTile> tiles;
+  @override
+  void initState() {
+    super.initState();
+    tiles = initTiles();
+  }
 
-  List<Widget> listetile() {
+  List<NewTile> initTiles() {
+    //génération des tuiles
+    return (List.generate(
+        size.toInt() * size.toInt(),
+        (index) =>
+            new NewTile(imageURL: 'https://picsum.photos/512', index: index)));
+  }
+
+  List<Widget> getTileWidgets(List<NewTile> inittiles) {
     List<Widget> tiles = [];
     for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
-      tiles.add(createTileWidgetFrom2(tile, i, size.toInt(), tiles));
+      tiles.add(newCreateTileWidgetFrom(inittiles[i], i, size.toInt()));
     }
     return tiles;
   }
 
   @override
   Widget build(BuildContext context) {
-    var tuiles = listetile();
     return Scaffold(
       appBar: AppBar(
         title: Text('Exercice 6b'),
@@ -103,7 +116,7 @@ class _Exercice6bState extends State<Exercice6b> {
                   crossAxisCount: size.toInt(),
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
-                  children: tuiles,
+                  children: getTileWidgets(tiles),
                 )),
           ),
           Slider(
@@ -117,6 +130,7 @@ class _Exercice6bState extends State<Exercice6b> {
             onChanged: (double newsize) {
               setState(() {
                 size = newsize;
+                tiles = initTiles();
               });
             },
           ),
@@ -125,29 +139,72 @@ class _Exercice6bState extends State<Exercice6b> {
     );
   }
 
-  Widget createTileWidgetFrom2(
-    Tile tile,
+  Widget newCreateTileWidgetFrom(
+    //Tile to Widget
+    NewTile plateau,
     int index,
     int taille,
-    List<Widget> tiles,
   ) {
     Widget tuile;
-    tuile = tile.croppedImageTile2(index, taille);
+    tuile = plateau.newCroppedImageTile(taille);
     return InkWell(
       child: tuile,
-      onTap: () {},
+      onTap: () {
+        swapTile(index);
+      },
     );
   }
 
-  swapTiles(
-    List<Widget> tiles,
-  ) {
+  swapTile(int index) {
+    print("${index}");
     setState(() {
-      tiles.insert(1, tiles.removeAt(0));
+      tiles.insert(index, tiles.removeAt(index + 1));
     });
   }
 }
 
+class NewTile {
+  String imageURL;
+  int index;
+
+  NewTile({this.imageURL, this.index});
+
+  Widget croppedImageTile() {
+    return FittedBox(
+      fit: BoxFit.fill,
+      child: ClipRect(
+        child: Container(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            widthFactor: 0.3,
+            heightFactor: 0.3,
+            child: Image.network(this.imageURL),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget newCroppedImageTile(int taille) {
+    int q = index ~/ taille;
+    int r = index % taille;
+    int n = taille - 1;
+
+    return FittedBox(
+      fit: BoxFit.fill,
+      child: ClipRect(
+        child: Container(
+          child: Align(
+            alignment: FractionalOffset(r / n, q / n),
+            widthFactor: 1 / taille,
+            heightFactor: 1 / taille,
+            child: Image.network(this.imageURL),
+          ),
+        ),
+      ),
+    );
+  }
+}
 /*GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: size.toInt(),

@@ -55,7 +55,8 @@ class _Exercice5bState extends State<Exercice5b> {
                         height: (375 - 8) / 3,
                         child: Container(
                             margin: EdgeInsets.all(0.0),
-                            child: this.createTileWidgetFrom2(tile, index, 3))),
+                            child:
+                                this.createTileWidgetFrom2(tile2, index, 3))),
                   ],
                 ),
               );
@@ -107,7 +108,7 @@ class _Exercice5cState extends State<Exercice5c> {
                           child: Container(
                             margin: EdgeInsets.all(0.0),
                             child: this.createTileWidgetFrom2(
-                                tile, index, size.toInt()),
+                                tile2, index, size.toInt()),
                           ),
                         ),
                       ]),
