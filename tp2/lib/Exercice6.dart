@@ -78,20 +78,10 @@ class _Exercice6bState extends State<Exercice6b> {
 
   List<Widget> listetile() {
     List<Widget> tiles = [];
-    List<Widget> tilesTap = [];
     for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
       tiles.add(createTileWidgetFrom2(tile, i, size.toInt(), tiles));
     }
-    for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
-      tilesTap.add(
-        InkWell(
-            child: tiles[i],
-            onTap: () {
-              swapTiles(tilesTap);
-            }),
-      );
-    }
-    return tilesTap;
+    return tiles;
   }
 
   @override
