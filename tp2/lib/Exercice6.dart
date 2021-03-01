@@ -78,10 +78,20 @@ class _Exercice6bState extends State<Exercice6b> {
 
   List<Widget> listetile() {
     List<Widget> tiles = [];
+    List<Widget> tilesTap = [];
     for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
-      tiles.add(createTileWidgetFrom2(tile, i, size.toInt()));
+      tiles.add(createTileWidgetFrom2(tile, i, size.toInt(), tiles));
     }
-    return tiles;
+    for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
+      tilesTap.add(
+        InkWell(
+            child: tiles[i],
+            onTap: () {
+              swapTiles(tilesTap);
+            }),
+      );
+    }
+    return tilesTap;
   }
 
   @override
@@ -104,8 +114,51 @@ class _Exercice6bState extends State<Exercice6b> {
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
                   children: tuiles,
-                )
-                /*GridView.builder(
+                )),
+          ),
+          Slider(
+            min: 3.0,
+            max: 9.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            divisions: 6,
+            value: size,
+            label: size.round().toString(),
+            onChanged: (double newsize) {
+              setState(() {
+                size = newsize;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createTileWidgetFrom2(
+    Tile tile,
+    int index,
+    int taille,
+    List<Widget> tiles,
+  ) {
+    Widget tuile;
+    tuile = tile.croppedImageTile2(index, taille);
+    return InkWell(
+      child: tuile,
+      onTap: () {},
+    );
+  }
+
+  swapTiles(
+    List<Widget> tiles,
+  ) {
+    setState(() {
+      tiles.insert(1, tiles.removeAt(0));
+    });
+  }
+}
+
+/*GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: size.toInt(),
                       crossAxisSpacing: 4,
@@ -131,43 +184,3 @@ class _Exercice6bState extends State<Exercice6b> {
                       },
                     );
                   }),*/
-                ),
-          ),
-          Slider(
-            min: 3.0,
-            max: 9.0,
-            activeColor: Colors.blue,
-            inactiveColor: Colors.grey,
-            divisions: 6,
-            value: size,
-            label: size.round().toString(),
-            onChanged: (double newsize) {
-              setState(() {
-                size = newsize;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget createTileWidgetFrom2(
-    Tile tile,
-    int index,
-    int taille,
-  ) {
-    Widget tuile;
-    tuile = tile.croppedImageTile2(index, taille);
-    return InkWell(
-      child: tuile,
-      onTap: () {},
-    );
-  }
-
-  swapTiles(List<Widget> tiles, int index) {
-    setState(() {
-      tiles.insert(index, tiles.removeAt(index + 1));
-    });
-  }
-}
