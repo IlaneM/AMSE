@@ -4,6 +4,7 @@ import 'package:tp2/Exercice1.dart';
 import 'package:tp2/Exercice2.dart';
 import 'package:tp2/Exercice4.dart';
 import 'package:tp2/Exercice5.dart';
+import 'package:tp2/Exercice6.dart';
 
 void main() {
   runApp(MyApp());
@@ -131,12 +132,26 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Exercice5c(),
+                      builder: (context) => PositionedTiles(),
                     ),
                   );
                 },
                 title: Text('Exercice 6a'),
                 subtitle: Text("Echange de deux tuiles"),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Exercice6b(),
+                    ),
+                  );
+                },
+                title: Text('Exercice 6b'),
+                subtitle: Text("Echange de deux tuiles dans un plateau"),
               ),
             ),
           ],

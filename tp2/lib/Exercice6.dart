@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:tp2/Exercice4.dart';
 
 math.Random random = new math.Random();
 
-class Tile {
+class Tile2 {
   Color color;
 
-  Tile(this.color);
-  Tile.randomColor() {
+  Tile2(this.color);
+  Tile2.randomColor() {
     this.color = Color.fromARGB(
         255, random.nextInt(255), random.nextInt(255), random.nextInt(255));
   }
@@ -18,7 +19,7 @@ class Tile {
 // ==============
 
 class TileWidget extends StatelessWidget {
-  final Tile tile;
+  final Tile2 tile;
 
   TileWidget(this.tile);
 
@@ -45,7 +46,7 @@ class PositionedTiles extends StatefulWidget {
 
 class PositionedTilesState extends State<PositionedTiles> {
   List<Widget> tiles =
-      List<Widget>.generate(2, (index) => TileWidget(Tile.randomColor()));
+      List<Widget>.generate(2, (index) => TileWidget(Tile2.randomColor()));
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,110 @@ class PositionedTilesState extends State<PositionedTiles> {
   swapTiles() {
     setState(() {
       tiles.insert(1, tiles.removeAt(0));
+    });
+  }
+}
+
+class Exercice6b extends StatefulWidget {
+  @override
+  _Exercice6bState createState() => _Exercice6bState();
+}
+
+class _Exercice6bState extends State<Exercice6b> {
+  double size = 3;
+
+  List<Widget> listetile() {
+    List<Widget> tiles = [];
+    for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
+      tiles.add(createTileWidgetFrom2(tile, i, size.toInt()));
+    }
+    return tiles;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var tuiles = listetile();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exercice 6b'),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SizedBox(
+                height: 400,
+                child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(0),
+                  crossAxisCount: size.toInt(),
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                  children: tuiles,
+                )
+                /*GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: size.toInt(),
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4),
+                  itemCount: math.pow(size.toInt(), 2),
+                  itemBuilder: (BuildContext ctx, index) {
+                    return GestureDetector(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Column(children: [
+                          SizedBox(
+                            width: (375 - (size - 1) * 4) / size,
+                            height: (375 - (size - 1) * 4) / size,
+                            child: Container(
+                              margin: EdgeInsets.all(0.0),
+                              child: tuiles[index],
+                            ),
+                          ),
+                        ]),
+                      ),
+                      onTap: () {
+                        swapTiles(tuiles, 0);
+                      },
+                    );
+                  }),*/
+                ),
+          ),
+          Slider(
+            min: 3.0,
+            max: 9.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            divisions: 6,
+            value: size,
+            label: size.round().toString(),
+            onChanged: (double newsize) {
+              setState(() {
+                size = newsize;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createTileWidgetFrom2(
+    Tile tile,
+    int index,
+    int taille,
+  ) {
+    Widget tuile;
+    tuile = tile.croppedImageTile2(index, taille);
+    return InkWell(
+      child: tuile,
+      onTap: () {},
+    );
+  }
+
+  swapTiles(List<Widget> tiles, int index) {
+    setState(() {
+      tiles.insert(index, tiles.removeAt(index + 1));
     });
   }
 }
