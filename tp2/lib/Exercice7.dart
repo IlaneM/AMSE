@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:tp2/Exercice4.dart';
-import 'package:tp2/Exercice6.dart';
 import 'package:collection/collection.dart';
 
 class GameTaquin extends StatefulWidget {
@@ -436,22 +433,6 @@ class NewTile {
   int index;
 
   NewTile({this.imageURL, this.index});
-
-  Widget croppedImageTile() {
-    return FittedBox(
-      fit: BoxFit.fill,
-      child: ClipRect(
-        child: Container(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            widthFactor: 0.3,
-            heightFactor: 0.3,
-            child: Image.network(this.imageURL),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget newCroppedImageTile(int taille) {
     int q = index ~/ taille;
