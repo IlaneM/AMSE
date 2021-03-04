@@ -11,26 +11,45 @@ class GameTaquin extends StatefulWidget {
 }
 
 class _GameTaquinState extends State<GameTaquin> {
-  double size = 3;
-  bool caseB;
-  bool joue;
-  int indexCaseB;
-  int deplacements;
-  int diff;
-  List<NewTile> tiles;
-  List<NewTile> tilesFin;
-  List<Widget> tilesWidget;
-  TextButton playPause;
+  double size = 3; //nombre de lignes (ou colonnes) dans le plateau)
+  bool caseB; //true s'il y a une case blanche sur le plateau, false sinon
+  bool joue; //true si la partie est lancée, false sinon
+  bool estMelange; //true si le plateau est mélangé, false sinon
+  int indexCaseB; //Index de la case blanche
+  int deplacements; //Nombre de déplacements
+  int diff; //Difficulté (entre 1 et 4)
+  bool
+      _playHasBeenPressed; //true si le bouton pause est appuyé (partie en pause), false sinon
+  bool
+      _diff1HasBeenPressed; //true si le bouton difficulté 1 est appuyé, false sinon
+  bool
+      _diff2HasBeenPressed; //true si le bouton difficulté 2 est appuyé, false sinon
+  bool
+      _diff3HasBeenPressed; //true si le bouton difficulté 3 est appuyé, false sinon
+  bool
+      _diff4HasBeenPressed; //true si le bouton difficulté 4 est appuyé, false sinon
+  List<NewTile> tiles; //liste des tuiles
+  List<NewTile> tilesFin; //liste des tuiles objectif à atteindre
+  List<Widget> tilesWidget; //liste des tuiles en widget
+
   Function eq = const ListEquality().equals;
   @override
   void initState() {
-    super.initState();
     tiles = initTiles();
     tilesFin = [];
     tilesWidget = [];
+    indexCaseB = 0;
+    size = 3.0;
     joue = false;
     deplacements = 0;
     caseB = false;
+    estMelange = false;
+    diff = 1;
+    _playHasBeenPressed = false;
+    _diff1HasBeenPressed = true;
+    _diff2HasBeenPressed = false;
+    _diff3HasBeenPressed = false;
+    _diff4HasBeenPressed = false;
   }
 
   List<NewTile> initTiles() {
@@ -41,14 +60,6 @@ class _GameTaquinState extends State<GameTaquin> {
             new NewTile(imageURL: 'https://picsum.photos/512', index: index)));
   }
 
-  List<Widget> getTileWidgets(List<NewTile> inittiles) {
-    List<Widget> tiles = [];
-    for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
-      tiles.add(createTileWidget(inittiles[i], i, size.toInt()));
-    }
-    return tiles;
-  }
-
   List<NewTile> whiteCase(List<NewTile> tiles) {
     math.Random random = new math.Random();
     int indexB = random.nextInt(size.toInt() * size.toInt());
@@ -57,11 +68,12 @@ class _GameTaquinState extends State<GameTaquin> {
             "https://www.artoffice-immobilier.com/wp-content/uploads/2019/12/blanc-512x512-1.jpg",
         index: indexB);
     indexCaseB = indexB;
+    tilesFin = tiles;
     return tiles;
   }
 
   List<NewTile> melangeTiles(List<NewTile> tiles) {
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 100 * diff; i++) {
       List<int> liste = [
         indexCaseB - 1,
         indexCaseB + 1,
@@ -72,7 +84,259 @@ class _GameTaquinState extends State<GameTaquin> {
       int r = random.nextInt(4);
       swapTile(liste[r]);
     }
+    deplacements = 0;
+    estMelange = true;
     return tiles;
+  }
+
+  List<Widget> getTileWidgets(List<NewTile> inittiles) {
+    List<Widget> tiles = [];
+    for (var i = 0; i < math.pow(size.toInt(), 2); i++) {
+      tiles.add(createTileWidget(inittiles[i], i, size.toInt()));
+    }
+    return tiles;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    tilesWidget = getTileWidgets(tiles);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exercice 7'),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 50,
+            child: Text('Déplacements : ${deplacements}'),
+          ),
+          Flexible(
+            child: SizedBox(
+                height: 400,
+                child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(0),
+                  crossAxisCount: size.toInt(),
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                  children: tilesWidget,
+                )),
+          ),
+          Slider(
+            min: joue ? size : 3.0,
+            max: joue ? size : 9.0,
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            divisions: 6,
+            value: size,
+            label: size.round().toString(),
+            onChanged: (double newsize) {
+              setState(() {
+                size = newsize;
+                joue = false;
+                tiles = initTiles();
+                deplacements = 0;
+                estMelange = false;
+                _playHasBeenPressed = false;
+              });
+            },
+          ),
+          SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  child: _playHasBeenPressed ? Text("Pause") : Text('Start'),
+                  onPressed: () {
+                    setState(() {
+                      if (joue == false) {
+                        joue = true;
+                        tiles = melangeTiles(whiteCase(tiles));
+                      }
+                      _playHasBeenPressed = !_playHasBeenPressed;
+                    });
+                  },
+                ),
+                TextButton(
+                  child: Text("Recommencer"),
+                  onPressed: () {
+                    setState(() {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                  title: Text(
+                                      'Etes vous sur de vouloir recommencer ?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            initState();
+                                            Navigator.of(context).pop();
+                                          });
+                                        },
+                                        child: Text('oui')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('non')),
+                                  ]));
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Difficultée'),
+                  TextButton(
+                    child: _diff1HasBeenPressed
+                        ? Text("1",
+                            style: TextStyle(
+                                backgroundColor: Colors.blue,
+                                color: Colors.white))
+                        : Text("1"),
+                    onPressed: () {
+                      setState(() {
+                        diff = 1;
+                        if (!_diff1HasBeenPressed) {
+                          _diff1HasBeenPressed = !_diff1HasBeenPressed;
+                          _diff2HasBeenPressed = false;
+                          _diff3HasBeenPressed = false;
+                          _diff4HasBeenPressed = false;
+                        }
+                      });
+                    },
+                  ),
+                  TextButton(
+                    child: _diff2HasBeenPressed
+                        ? Text("2",
+                            style: TextStyle(
+                                backgroundColor: Colors.blue,
+                                color: Colors.white))
+                        : Text("2"),
+                    onPressed: () {
+                      setState(() {
+                        diff = 2;
+                        if (!_diff2HasBeenPressed) {
+                          _diff2HasBeenPressed = !_diff2HasBeenPressed;
+                          _diff1HasBeenPressed = false;
+                          _diff3HasBeenPressed = false;
+                          _diff4HasBeenPressed = false;
+                        }
+                      });
+                    },
+                  ),
+                  TextButton(
+                    child: _diff3HasBeenPressed
+                        ? Text("3",
+                            style: TextStyle(
+                                backgroundColor: Colors.blue,
+                                color: Colors.white))
+                        : Text("3"),
+                    onPressed: () {
+                      setState(() {
+                        diff = 3;
+                        if (!_diff3HasBeenPressed) {
+                          _diff3HasBeenPressed = !_diff3HasBeenPressed;
+                          _diff1HasBeenPressed = false;
+                          _diff2HasBeenPressed = false;
+                          _diff4HasBeenPressed = false;
+                        }
+                      });
+                    },
+                  ),
+                  TextButton(
+                    child: _diff4HasBeenPressed
+                        ? Text("4",
+                            style: TextStyle(
+                                backgroundColor: Colors.blue,
+                                color: Colors.white))
+                        : Text("4"),
+                    onPressed: () {
+                      setState(() {
+                        diff = 4;
+                        if (!_diff4HasBeenPressed) {
+                          _diff4HasBeenPressed = !_diff4HasBeenPressed;
+                          _diff2HasBeenPressed = false;
+                          _diff3HasBeenPressed = false;
+                          _diff4HasBeenPressed = false;
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget createTileWidget(
+    //Tile to Widget
+    NewTile plateau,
+    int index,
+    int taille,
+  ) {
+    Widget tuile;
+    tuile = plateau.newCroppedImageTile(taille);
+    if (joue && _playHasBeenPressed) {
+      return InkWell(
+        child: tuile,
+        onTap: () {
+          swapTile(index);
+        },
+      );
+    } else {
+      return tuile;
+    }
+  }
+
+  void swapTile(int index) {
+    setState(() {
+      bool test = false;
+
+      if (index >= 0 && index < size.toInt() * size.toInt()) {
+        test = echangeTuiles(tiles, index, indexCaseB);
+      }
+
+      //tiles.insert(index, tiles.removeAt(indexCaseB));
+      if (test) {
+        indexCaseB = index;
+        deplacements += 1;
+      }
+      if (estMelange && deplacements > 200 && eq(tiles, tilesFin)) {
+        joue = false;
+        print('égalité');
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                    title: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Victoire'),
+                          Text(
+                              'Vous avez effectués ${deplacements} déplacements'),
+                        ]),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            setState(() {
+                              initState();
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          child: Text('Fermer'))
+                    ]));
+      }
+    });
   }
 
   bool echangeTuiles(List<NewTile> liste, int a, int b) {
@@ -135,115 +399,6 @@ class _GameTaquinState extends State<GameTaquin> {
       }
     }
     return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    tilesWidget = getTileWidgets(tiles);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Exercice 7'),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: SizedBox(
-                height: 400,
-                child: GridView.count(
-                  primary: false,
-                  padding: const EdgeInsets.all(0),
-                  crossAxisCount: size.toInt(),
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
-                  children: tilesWidget,
-                )),
-          ),
-          Slider(
-            min: 3.0,
-            max: 9.0,
-            activeColor: Colors.blue,
-            inactiveColor: Colors.grey,
-            divisions: 6,
-            value: size,
-            label: size.round().toString(),
-            onChanged: (double newsize) {
-              setState(() {
-                size = newsize;
-                joue = false;
-                tiles = initTiles();
-              });
-            },
-          ),
-          TextButton(
-            child: Text("Start"),
-            onPressed: () {
-              setState(() {
-                JeuRegle();
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget createTileWidget(
-    //Tile to Widget
-    NewTile plateau,
-    int index,
-    int taille,
-  ) {
-    Widget tuile;
-    tuile = plateau.newCroppedImageTile(taille);
-    if (joue) {
-      return InkWell(
-        child: tuile,
-        onTap: () {
-          if (index > 0 && index < size.toInt() * size.toInt()) {
-            swapTile(index);
-            deplacements += 1;
-          }
-        },
-      );
-    } else {
-      return tuile;
-    }
-  }
-
-  swapTile(int index) {
-    setState(() {
-      bool test = false;
-      if (deplacements >= 20 && eq(tiles, tilesFin)) {
-        joue = false;
-        print('égalité');
-        showDialog(
-            context: context,
-            builder: (_) => AlertDialog(title: Text('Victoire'), actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Fermer'))
-                ]));
-      }
-      if (index > 0 && index < size.toInt() * size.toInt()) {
-        test = echangeTuiles(tiles, index, indexCaseB);
-      }
-      //tiles.insert(index, tiles.removeAt(indexCaseB));
-      if (test) {
-        indexCaseB = index;
-      }
-    });
-  }
-
-  void JeuRegle() {
-    if (joue == false) {
-      joue = true;
-      tiles = whiteCase(tiles);
-      tilesFin = tiles;
-      tiles = melangeTiles(tiles);
-    }
   }
 }
 
