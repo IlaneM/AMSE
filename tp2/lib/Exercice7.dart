@@ -18,6 +18,8 @@ class _GameTaquinState extends State<GameTaquin> {
   int indexCaseB; //Index de la case blanche
   int deplacements; //Nombre de déplacements
   int diff; //Difficulté (entre 1 et 4)
+  int indexCaseBIni;
+  bool affi = true;
   bool
       _playHasBeenPressed; //true si le bouton pause est appuyé (partie en pause), false sinon
   bool
@@ -30,15 +32,15 @@ class _GameTaquinState extends State<GameTaquin> {
       _diff4HasBeenPressed; //true si le bouton difficulté 4 est appuyé, false sinon
   List<NewTile> tiles; //liste des tuiles
   List<NewTile> tilesFin; //liste des tuiles objectif à atteindre
-  List<Widget> tilesWidget; //liste des tuiles en widget
 
+  Function deepEq = const DeepCollectionEquality().equals;
   Function eq = const ListEquality().equals;
   @override
   void initState() {
     tiles = initTiles();
     tilesFin = [];
-    tilesWidget = [];
     indexCaseB = 0;
+    indexCaseBIni = 0;
     size = 3.0;
     joue = false;
     deplacements = 0;
@@ -68,12 +70,22 @@ class _GameTaquinState extends State<GameTaquin> {
             "https://www.artoffice-immobilier.com/wp-content/uploads/2019/12/blanc-512x512-1.jpg",
         index: indexB);
     indexCaseB = indexB;
+    indexCaseBIni = indexCaseB;
     tilesFin = tiles;
     return tiles;
   }
 
+  List<NewTile> listVictoire() {
+    List<NewTile> liste = initTiles();
+    liste[indexCaseBIni] = NewTile(
+        imageURL:
+            "https://www.artoffice-immobilier.com/wp-content/uploads/2019/12/blanc-512x512-1.jpg",
+        index: indexCaseBIni);
+    return liste;
+  }
+
   List<NewTile> melangeTiles(List<NewTile> tiles) {
-    for (var i = 0; i < 100 * diff; i++) {
+    for (var i = 0; i < 50 * diff * size.toInt(); i++) {
       List<int> liste = [
         indexCaseB - 1,
         indexCaseB + 1,
@@ -99,7 +111,6 @@ class _GameTaquinState extends State<GameTaquin> {
 
   @override
   Widget build(BuildContext context) {
-    tilesWidget = getTileWidgets(tiles);
     return Scaffold(
       appBar: AppBar(
         title: Text('Exercice 7'),
@@ -120,7 +131,7 @@ class _GameTaquinState extends State<GameTaquin> {
                   crossAxisCount: size.toInt(),
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
-                  children: tilesWidget,
+                  children: getTileWidgets(tiles),
                 )),
           ),
           Slider(
@@ -154,6 +165,7 @@ class _GameTaquinState extends State<GameTaquin> {
                       if (joue == false) {
                         joue = true;
                         tiles = melangeTiles(whiteCase(tiles));
+                        tilesFin = listVictoire();
                       }
                       _playHasBeenPressed = !_playHasBeenPressed;
                     });
@@ -264,9 +276,9 @@ class _GameTaquinState extends State<GameTaquin> {
                         diff = 4;
                         if (!_diff4HasBeenPressed) {
                           _diff4HasBeenPressed = !_diff4HasBeenPressed;
+                          _diff1HasBeenPressed = false;
                           _diff2HasBeenPressed = false;
                           _diff3HasBeenPressed = false;
-                          _diff4HasBeenPressed = false;
                         }
                       });
                     },
@@ -301,18 +313,14 @@ class _GameTaquinState extends State<GameTaquin> {
   void swapTile(int index) {
     setState(() {
       bool test = false;
-
       if (index >= 0 && index < size.toInt() * size.toInt()) {
         test = echangeTuiles(tiles, index, indexCaseB);
       }
-
-      //tiles.insert(index, tiles.removeAt(indexCaseB));
       if (test) {
         indexCaseB = index;
         deplacements += 1;
       }
-      if (estMelange && deplacements > 200 && eq(tiles, tilesFin)) {
-        joue = false;
+      if (estMelange && deplacements > 0 && listEgal(tiles, tilesFin)) {
         print('égalité');
         showDialog(
             context: context,
@@ -400,6 +408,27 @@ class _GameTaquinState extends State<GameTaquin> {
     }
     return false;
   }
+}
+
+bool listEgal(List<NewTile> l1, List<NewTile> l2) {
+  bool egal = false;
+  if (l1.length == l2.length) {
+    var i = 0;
+    while (tileEgal(l1[i], l2[i]) && i < l1.length - 1) {
+      i++;
+    }
+    if (i == l1.length - 1) {
+      egal = true;
+    }
+  }
+  return egal;
+}
+
+bool tileEgal(NewTile t1, NewTile t2) {
+  if (t1.imageURL == t2.imageURL && t1.index == t2.index) {
+    return true;
+  }
+  return false;
 }
 
 class NewTile {
